@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSessionTurns } from '../../hooks/useSessions';
 import { useJobStream } from '../../hooks/useJobStream';
 import { useJobsStore } from '../../store/jobsStore';
+import { useUIStore } from '../../store/uiStore';
 import { api } from '../../api/client';
 import { SessionTrace } from './SessionTrace';
 
@@ -10,6 +11,7 @@ export function ChatThread({ sessionId }: { sessionId: string | null }) {
   const [input, setInput] = useState('');
   const [pendingJobId, setPendingJobId] = useState<string | null>(null);
   const trackJob = useJobsStore((s) => s.trackJob);
+  const openSession = useUIStore((s) => s.openSession);
   const stream = useJobStream(pendingJobId);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -23,10 +25,26 @@ export function ChatThread({ sessionId }: { sessionId: string | null }) {
     const query = input.trim();
     if (!query) return;
     setInput('');
-    const { job_id } = await api.ask(query, sessionId ?? undefined);
+    // Adopt a stable session id up front. Without this, a brand-new chat has a
+    // null session, so after the job completes the streamed answer is cleared
+    // and the session-turns query (disabled for a null id) never shows it — the
+    // reply vanishes. Opening the session enables the turns query so the
+    // persisted answer renders once the job finishes.
+    let sid = sessionId;
+    if (!sid) {
+      sid = `${crypto.randomUUID().slice(0, 8)}`;
+      openSession(sid, 'ask');
+    }
+    const { job_id } = await api.ask(query, sid);
     trackJob(job_id);
     setPendingJobId(job_id);
   };
+
+  // Bridge the gap between "job done" and "turns refetched": keep the streamed
+  // answer on screen until the persisted assistant turn actually shows up.
+  const answerPersisted =
+    !!liveText && !!turns?.some((t) => t.role === 'assistant' && t.text === liveText);
+  const showSettledAnswer = stream.done && !stream.error && !!liveText && !answerPersisted;
 
   const isEmpty = !turns?.length && !pendingJobId;
 
@@ -70,7 +88,7 @@ export function ChatThread({ sessionId }: { sessionId: string | null }) {
           </div>
         ))}
 
-        {pendingJobId && !stream.done && (
+        {pendingJobId && (!stream.done || showSettledAnswer) && (
           <div className="flex gap-3">
             <div className="h-6 w-6 shrink-0 rounded-full bg-neutral-800 flex items-center justify-center text-xs font-bold text-neutral-400 mt-0.5">
               AI
