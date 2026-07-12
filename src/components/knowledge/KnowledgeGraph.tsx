@@ -16,6 +16,12 @@ const CATEGORY_COLOR: Record<EntityCategory, string> = {
   paper: '#e5e5e5', // neutral-200
 };
 
+// Concept categories from entity extraction are open-ended (e.g. "general"),
+// so fall back to a neutral color rather than rendering a transparent node.
+const DEFAULT_NODE_COLOR = '#64748b'; // slate-500
+const nodeColor = (category: string): string =>
+  CATEGORY_COLOR[category as EntityCategory] ?? DEFAULT_NODE_COLOR;
+
 // No layout coordinates come back from the backend, so lay nodes out on a
 // simple deterministic circle — good enough for a depth-2 subgraph.
 function layout(nodeIds: string[]): Record<string, { x: number; y: number }> {
@@ -47,7 +53,7 @@ export function KnowledgeGraph() {
         position: positions[n.id] ?? { x: 0, y: 0 },
         data: { label: n.label },
         style: {
-          background: CATEGORY_COLOR[n.category],
+          background: nodeColor(n.category),
           color: '#0a0a0a',
           fontFamily: 'monospace',
           fontSize: 11,
