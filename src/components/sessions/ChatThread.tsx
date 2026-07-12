@@ -5,6 +5,7 @@ import { useJobsStore } from '../../store/jobsStore';
 import { useUIStore } from '../../store/uiStore';
 import { api } from '../../api/client';
 import { SessionTrace } from './SessionTrace';
+import { TraceTimeline } from '../trace/TraceTimeline';
 
 export function ChatThread({ sessionId }: { sessionId: string | null }) {
   const { data: turns } = useSessionTurns(sessionId);
@@ -33,9 +34,9 @@ export function ChatThread({ sessionId }: { sessionId: string | null }) {
     let sid = sessionId;
     if (!sid) {
       sid = `${crypto.randomUUID().slice(0, 8)}`;
-      openSession(sid, 'ask');
+      openSession(sid);
     }
-    const { job_id } = await api.ask(query, sid);
+    const { job_id } = await api.chat(query, sid);
     trackJob(job_id);
     setPendingJobId(job_id);
   };
@@ -77,10 +78,10 @@ export function ChatThread({ sessionId }: { sessionId: string | null }) {
               {turn.role === 'user' ? 'U' : 'AI'}
             </div>
             <div
-              className={`max-w-[80%] rounded-xl px-3.5 py-2.5 text-sm leading-relaxed ${
+              className={`max-w-[80%] rounded-xl px-3.5 py-2.5 ${
                 turn.role === 'user'
-                  ? 'bg-emerald-600/20 text-neutral-100 rounded-tr-sm'
-                  : 'bg-white/[0.04] text-neutral-200 rounded-tl-sm'
+                  ? 'bg-emerald-600/20 text-neutral-100 rounded-tr-sm text-sm leading-relaxed'
+                  : 'bg-white/[0.04] text-neutral-100 rounded-tl-sm font-serif text-[15px] leading-relaxed'
               }`}
             >
               {turn.text}
@@ -93,17 +94,24 @@ export function ChatThread({ sessionId }: { sessionId: string | null }) {
             <div className="h-6 w-6 shrink-0 rounded-full bg-neutral-800 flex items-center justify-center text-xs font-bold text-neutral-400 mt-0.5">
               AI
             </div>
-            <div className="max-w-[80%] rounded-xl rounded-tl-sm bg-white/[0.04] px-3.5 py-2.5 text-sm text-neutral-200 leading-relaxed">
-              {liveText || (
-                <span className="flex items-center gap-1.5 text-neutral-500">
-                  <span className="inline-flex gap-1">
-                    <span className="animate-bounce h-1 w-1 rounded-full bg-neutral-500" style={{ animationDelay: '0ms' }} />
-                    <span className="animate-bounce h-1 w-1 rounded-full bg-neutral-500" style={{ animationDelay: '150ms' }} />
-                    <span className="animate-bounce h-1 w-1 rounded-full bg-neutral-500" style={{ animationDelay: '300ms' }} />
-                  </span>
-                  {stream.phase ?? 'thinking'}
-                </span>
+            <div className="max-w-[80%] min-w-0 space-y-2">
+              {stream.trace.length > 0 && (
+                <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2">
+                  <TraceTimeline steps={stream.trace} />
+                </div>
               )}
+              <div className="rounded-xl rounded-tl-sm bg-white/[0.04] px-3.5 py-2.5 font-serif text-[15px] text-neutral-100 leading-relaxed">
+                {liveText || (
+                  <span className="flex items-center gap-1.5 text-neutral-500">
+                    <span className="inline-flex gap-1">
+                      <span className="animate-bounce h-1 w-1 rounded-full bg-neutral-500" style={{ animationDelay: '0ms' }} />
+                      <span className="animate-bounce h-1 w-1 rounded-full bg-neutral-500" style={{ animationDelay: '150ms' }} />
+                      <span className="animate-bounce h-1 w-1 rounded-full bg-neutral-500" style={{ animationDelay: '300ms' }} />
+                    </span>
+                    {stream.phase ?? 'thinking'}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -122,7 +130,7 @@ export function ChatThread({ sessionId }: { sessionId: string | null }) {
       {/* Input */}
       <form
         onSubmit={(e) => { e.preventDefault(); submit(); }}
-        className="flex gap-2 border-t border-white/[0.06] bg-[#0d0d0f] px-2 py-3"
+        className="flex gap-2 border-t border-white/[0.06] bg-[#0B0E14] px-2 py-3"
       >
         <input
           value={input}

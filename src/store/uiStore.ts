@@ -5,7 +5,7 @@ export type SelectedEntity =
   | { type: 'node'; id: string; label: string; category: string }
   | null;
 
-export type CanvasMode = 'dashboard' | 'ask' | 'brainstorm' | 'graph';
+export type CanvasMode = 'dashboard' | 'chat' | 'graph';
 
 interface UIState {
   selectedEntity: SelectedEntity;
@@ -13,7 +13,7 @@ interface UIState {
 
   activeSessionId: string | null;
   canvasMode: CanvasMode;
-  openSession: (id: string | null, mode: 'ask' | 'brainstorm') => void;
+  openSession: (id: string | null) => void;
   closeSession: () => void;
   showGraph: () => void;
 
@@ -34,7 +34,7 @@ export const useUIStore = create<UIState>((set) => ({
 
   activeSessionId: null,
   canvasMode: 'dashboard',
-  openSession: (id, mode) => set({ activeSessionId: id, canvasMode: mode }),
+  openSession: (id) => set({ activeSessionId: id, canvasMode: 'chat' }),
   closeSession: () => set({ activeSessionId: null, canvasMode: 'dashboard' }),
   showGraph: () => set({ canvasMode: 'graph', activeSessionId: null }),
 

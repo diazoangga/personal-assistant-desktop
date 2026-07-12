@@ -10,9 +10,22 @@ body,
 
 body {
   margin: 0;
+  background: #0b0e14; /* Observatory ink — avoids a white flash before React mounts */
+  font-family: 'Inter Tight', Geist, ui-sans-serif, system-ui, sans-serif;
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Respect reduced-motion: the trace "thought stream" fades rather than bounces. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Thin dark scrollbars globally */

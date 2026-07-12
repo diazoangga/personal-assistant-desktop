@@ -5,7 +5,25 @@ export interface JobStarted {
   kind: string;
 }
 
-export type EventType = 'started' | 'progress' | 'message' | 'result' | 'error';
+export type EventType = 'started' | 'progress' | 'message' | 'result' | 'error' | 'trace';
+
+export type TraceKind = 'agent' | 'tool' | 'skill' | 'llm' | 'worker';
+
+// One span in the agent/tool/skill/llm trace tree. Live events (from the job
+// stream) and persisted rows (GET /sessions/{id}/trace) share this shape; nest
+// via parent_id. status goes 'running' → 'ok' | 'error'.
+export interface TraceStep {
+  id: string;
+  parent_id: string | null;
+  kind: TraceKind | string;
+  name: string;
+  status: 'running' | 'ok' | 'error' | string;
+  detail: string | null;
+  duration_ms: number | null;
+  tokens_in?: number | null;
+  tokens_out?: number | null;
+  created_at?: string;
+}
 
 export interface EventUpdate {
   event_type: EventType;
@@ -142,7 +160,7 @@ export interface ResearchRun {
 export interface Session {
   id: string;
   title: string;
-  kind: 'ask' | 'brainstorm';
+  kind: 'chat' | 'ask' | 'brainstorm' | string;
   updated_at: string;
 }
 
@@ -151,19 +169,6 @@ export interface Turn {
   role: 'user' | 'assistant';
   text: string;
   citations?: string[];
-  created_at: string;
-}
-
-// Audit trail: which agent/tool/skill ran for a session (GET /sessions/{id}/trace).
-export interface TraceEntry {
-  id: number;
-  session_id: string | null;
-  job_id: string | null;
-  kind: 'agent' | 'tool' | 'skill' | string;
-  name: string;
-  status: 'ok' | 'error' | string;
-  detail: string | null;
-  duration_ms: number | null;
   created_at: string;
 }
 
@@ -191,6 +196,27 @@ export interface ActivityItem {
   source: string;
   message: string;
   created_at: string;
+}
+
+export interface WorkerRun {
+  id: number;
+  worker: string;
+  status: 'running' | 'ok' | 'error' | string;
+  detail: string | null;
+  job_id: string | null;
+  started_at: string;
+  finished_at: string | null;
+}
+
+export type MemoryScope = 'core' | 'semantic' | 'procedural';
+
+export interface MemoryEntry {
+  id: number;
+  scope: MemoryScope | string;
+  content: string;
+  source_session: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export type ResearchDepth = 'shallow' | 'normal' | 'deep';

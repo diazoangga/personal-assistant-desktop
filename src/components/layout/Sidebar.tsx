@@ -8,15 +8,15 @@ export function Sidebar() {
   const canvasMode = useUIStore((s) => s.canvasMode);
 
   return (
-    <aside className="flex w-[240px] shrink-0 flex-col border-r border-white/[0.06] bg-[#111114]">
+    <aside className="flex w-[240px] shrink-0 flex-col border-r border-white/[0.06] bg-[#12161F]">
       {/* Nav actions */}
       <div className="flex flex-col gap-1 p-3 border-b border-white/[0.06]">
         <button
-          onClick={() => openSession(null, 'ask')}
+          onClick={() => openSession(null)}
           className="flex items-center gap-2 rounded-md bg-emerald-600 px-3 py-2 text-left text-xs font-semibold text-white hover:bg-emerald-500 transition-colors"
         >
           <span className="text-base leading-none">+</span>
-          New Session
+          New Chat
         </button>
         <button
           onClick={openResearchLauncher}

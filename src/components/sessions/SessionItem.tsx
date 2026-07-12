@@ -4,6 +4,7 @@ import { useUIStore } from '../../store/uiStore';
 import { useDeleteSession } from '../../hooks/useSessions';
 
 const kindIcon: Record<string, string> = {
+  chat: '💬',
   ask: '💬',
   brainstorm: '🧠',
 };
@@ -36,7 +37,7 @@ export function SessionItem({ session }: { session: Session }) {
       }`}
     >
       <button
-        onClick={() => openSession(session.id, session.kind)}
+        onClick={() => openSession(session.id)}
         className={`flex min-w-0 flex-1 items-center gap-2 truncate px-2 py-1.5 text-left text-xs ${
           isActive ? 'text-neutral-100' : 'text-neutral-400 group-hover:text-neutral-200'
         }`}

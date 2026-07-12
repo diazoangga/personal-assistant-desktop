@@ -1,50 +1,70 @@
-# Design Foundations
+# Design Foundations — "Observatory"
 
-A dark, terminal-adjacent theme built on Tailwind's `neutral`/`stone` scales. The defining
-idea: **interest strength is rendered as visual weight** — bright/full for strong interests,
-dimmed as they decay toward the research-trigger threshold.
+The UI is an **instrument panel for a cognitive engine**: a calm reading surface embedded
+in a quiet telemetry console, where the machine's thinking renders as signal. Two defining
+ideas: **interest strength is visual weight** (bright/full for strong interests, dimmed as
+they decay toward the 0.3 research trigger), and **color encodes the agent's behavior** —
+the trace kinds form a functional spectrum, not decoration.
 
-## Color tokens
+> Full rationale, including the self-critique against generic dark-theme defaults, lives in
+> `personal-assistant/docs/DESKTOP_REDESIGN_PLAN.md` §5.1.
 
-| Token | Tailwind | Use |
+## Color tokens (`tailwind.config.js`)
+
+| Token | Hex | Use |
 |---|---|---|
-| Canvas bg | `bg-neutral-950` | Main canvas background |
-| Surface bg | `bg-neutral-900` | Sidebar, context panel, cards |
-| Border | `border-neutral-800` | All panel/card borders |
-| Text primary | `text-stone-50` | High-strength interests, headings, answers |
-| Text secondary | `text-neutral-400` | Mid-strength interests, body labels |
-| Text muted | `text-neutral-600` | Low-strength / decaying interests, metadata |
-| Accent (live) | `text-emerald-400` / 🟢 | Active daemon, running jobs |
-| Accent (action) | `bg-emerald-600` | Primary buttons (New Session, Research) |
-| Warn | `text-amber-400` | Stalled jobs, daemon degraded |
-| Error | `text-red-400` | Failed jobs, backend offline |
+| `ink` | `#0B0E14` | canvas — cool blue-black, not pure black |
+| `slate` | `#12161F` | surface — sidebar, panels, cards |
+| hairline | `rgba(255,255,255,.06)` | all separators (`border-white/[0.06]`) |
+| text hi / body / meta | `#E6EAF2` / `neutral-400` / `neutral-600` | reading / body / metadata |
+| `action` | `#2FD98A` (emerald-600 in-app) | primary action — reserved |
+| `alert` | `#FF6B6B` | failures / offline |
+
+### The signal spectrum (functional color)
+
+Color communicates the kind of work in the trace timeline, graph, and worker badges — one
+system across the app:
+
+| `signal.*` | Hex | Meaning |
+|---|---|---|
+| agent | `#B79CFF` violet | orchestrator / sub-agent spans |
+| tool | `#5CC8FF` cyan | tool calls |
+| skill | `#FFC55C` amber | skills (memory, extraction, …) |
+| llm | `#8A94A6` slate | LLM sub-calls |
+| worker | `#4ADE9E` mint | background worker runs |
+
+## Typography — instrument vs. reading room
+
+| Role | Family (`font-*`) | Use |
+|---|---|---|
+| Display / UI | `font-sans` — Inter Tight / Geist grotesk | nav, labels, headings, chrome |
+| Data / trace | `font-mono` — JetBrains Mono | job ids, spans, latencies, stats, trace |
+| **Reading** | `font-serif` — Newsreader | the assistant's answers **and** the digest headline |
+
+Rendering the assistant's answer in a serif reading column is the deliberate signature — the
+machine's *readout* (mono/grotesk) and its *thinking delivered to you* (serif) are visually
+distinct surfaces. (Font files fall back gracefully to system serif/mono until bundled.)
 
 ## The interest-decay color language
 
-Strength → visual treatment is the core idiom. The matrix should make the "about to
-trigger" band (near 0.3) obvious, since that's what drives autonomous research.
+| Strength | Treatment |
+|---|---|
+| ≥ 0.70 | full weight, bright (`text-stone-50`) |
+| 0.40–0.69 | normal (`text-neutral-400`) |
+| 0.30–0.39 | dim — near the 0.3 trigger (`text-neutral-600`) |
+| < 0.30 | faded, only when showing all |
 
-| Strength | Treatment | Token |
-|---|---|---|
-| ≥ 0.70 | full weight, bright | `text-stone-50` |
-| 0.40–0.69 | normal | `text-neutral-400` |
-| 0.30–0.39 | dim (near the 0.3 trigger threshold) | `text-neutral-600` |
-| < 0.30 | only when showing all; faded | `text-neutral-700 opacity-60` |
+## Signature — the trace "thought stream"
 
-(The 0.3 threshold and the 720-hour decay half-life are backend behavior — see
-`personal-assistant/docs/architecture/signal-flow.md`.)
-
-## Typography
-
-A **monospace** face (JetBrains Mono / system mono) for stats, job IDs, and progress —
-reinforcing the "cognitive engine console" feel. UI text in the system sans.
+Each turn, the orchestrator's nested spans light up in their `signal.*` color as they fire
+(agent → tool → llm), with latency ticks, then collapse to a summary line when settled.
+Spend the boldness here; keep everything else quiet.
 
 ## Accessibility & polish
 
-- Respect `prefers-reduced-motion`: progress bars animate width, not shimmer.
-- Every color-coded state also carries a text/icon label (🟢 Active) — never color alone.
-- Keyboard: `⌘/Ctrl+K` opens Manual Research, `⌘/Ctrl+N` new session (wired in `App.tsx`);
-  arrow keys move selection in the graph and session list.
+- `prefers-reduced-motion` respected (the thought stream fades rather than bounces) — see `index.css`.
+- Every color-coded state also carries a glyph/label (never color alone).
+- Keyboard: `⌘/Ctrl+K` Manual Research, `⌘/Ctrl+N` new chat, `⌘/Ctrl+\` toggle sidebar.
 
 ---
 

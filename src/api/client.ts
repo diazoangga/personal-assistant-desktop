@@ -24,9 +24,11 @@ import type {
   Session,
   Stats,
   Interest,
-  TraceEntry,
+  MemoryEntry,
+  TraceStep,
   Turn,
   Verdict,
+  WorkerRun,
 } from './types';
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8787';
@@ -45,13 +47,11 @@ export class PersonalAssistantAPI {
 
   // ── command path: returns a job to stream ──
 
-  async ask(query: string, sessionId?: string): Promise<JobStarted> {
-    const { data } = await this.client.post('/ask', { query, session_id: sessionId });
-    return data;
-  }
-
-  async brainstorm(text: string, sessionId?: string): Promise<JobStarted> {
-    const { data } = await this.client.post('/brainstorm', { text, session_id: sessionId });
+  // Unified conversational entrypoint — routes through the orchestrator, which
+  // delegates to research/KB/web tools (all visible in the trace). Replaces the
+  // removed /ask and /brainstorm.
+  async chat(text: string, sessionId?: string): Promise<JobStarted> {
+    const { data } = await this.client.post('/chat', { text, session_id: sessionId });
     return data;
   }
 
@@ -132,7 +132,7 @@ export class PersonalAssistantAPI {
     return data;
   }
 
-  async sessionTrace(id: string): Promise<TraceEntry[]> {
+  async sessionTrace(id: string): Promise<TraceStep[]> {
     const { data } = await this.client.get(`/sessions/${encodeURIComponent(id)}/trace`);
     return data;
   }
@@ -165,6 +165,29 @@ export class PersonalAssistantAPI {
 
   async activity(limit = 50): Promise<ActivityItem[]> {
     const { data } = await this.client.get('/activity', { params: { limit } });
+    return data;
+  }
+
+  // ── memory (what the assistant remembers) ──
+
+  async memory(scope?: string): Promise<MemoryEntry[]> {
+    const { data } = await this.client.get('/memory', { params: scope ? { scope } : {} });
+    return data;
+  }
+
+  async forgetMemory(id: number): Promise<void> {
+    await this.client.delete(`/memory/${id}`);
+  }
+
+  // ── background workers ──
+
+  async workers(): Promise<WorkerRun[]> {
+    const { data } = await this.client.get('/workers');
+    return data;
+  }
+
+  async runWorker(name: string): Promise<{ job_id: string; worker: string }> {
+    const { data } = await this.client.post(`/workers/${encodeURIComponent(name)}/run`);
     return data;
   }
 

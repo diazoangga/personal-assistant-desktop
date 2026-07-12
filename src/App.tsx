@@ -25,7 +25,7 @@ export default function App() {
       const mod = e.metaKey || e.ctrlKey;
       if (!mod) return;
       if (e.key === 'k') { e.preventDefault(); openResearchLauncher(); }
-      else if (e.key === 'n') { e.preventDefault(); openSession(null, 'ask'); }
+      else if (e.key === 'n') { e.preventDefault(); openSession(null); }
       else if (e.key === '\\') { e.preventDefault(); toggleSidebar(); }
     };
     window.addEventListener('keydown', onKeyDown);
@@ -34,7 +34,7 @@ export default function App() {
 
   if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#0d0d0f]">
+      <div className="flex h-screen items-center justify-center bg-[#0B0E14]">
         <div className="flex flex-col items-center gap-3">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-neutral-700 border-t-emerald-500" />
           <span className="text-xs text-neutral-500">Connecting…</span>
@@ -48,9 +48,9 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-screen w-screen flex-col overflow-hidden bg-[#0d0d0f] text-sm text-neutral-200">
+    <div className="flex h-screen w-screen flex-col overflow-hidden bg-[#0B0E14] text-sm text-neutral-200">
       {/* Top bar */}
-      <header className="flex h-11 shrink-0 items-center border-b border-white/[0.06] bg-[#111114] px-3 gap-2">
+      <header className="flex h-11 shrink-0 items-center border-b border-white/[0.06] bg-[#12161F] px-3 gap-2">
         <div className="flex items-center gap-2 min-w-0">
           <button
             onClick={toggleSidebar}
@@ -64,10 +64,9 @@ export default function App() {
         </div>
 
         <nav className="flex-1 flex items-center justify-center gap-1">
-          <TabButton active={canvasMode === 'dashboard'} onClick={closeSession}>Dashboard</TabButton>
+          <TabButton active={canvasMode === 'chat'} onClick={() => openSession(null)}>Chat</TabButton>
           <TabButton active={canvasMode === 'graph'} onClick={showGraph}>Graph</TabButton>
-          <TabButton active={canvasMode === 'ask'} onClick={() => openSession(null, 'ask')}>Ask</TabButton>
-          <TabButton active={canvasMode === 'brainstorm'} onClick={() => openSession(null, 'brainstorm')}>Brainstorm</TabButton>
+          <TabButton active={canvasMode === 'dashboard'} onClick={closeSession}>Dashboard</TabButton>
         </nav>
 
         <div className="flex items-center gap-2">
