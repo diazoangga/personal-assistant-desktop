@@ -24,6 +24,7 @@ import type {
   Session,
   Stats,
   Interest,
+  MemoryEntry,
   TraceStep,
   Turn,
   Verdict,
@@ -164,6 +165,17 @@ export class PersonalAssistantAPI {
   async activity(limit = 50): Promise<ActivityItem[]> {
     const { data } = await this.client.get('/activity', { params: { limit } });
     return data;
+  }
+
+  // ── memory (what the assistant remembers) ──
+
+  async memory(scope?: string): Promise<MemoryEntry[]> {
+    const { data } = await this.client.get('/memory', { params: scope ? { scope } : {} });
+    return data;
+  }
+
+  async forgetMemory(id: number): Promise<void> {
+    await this.client.delete(`/memory/${id}`);
   }
 
   // ── streaming: WebSocket preferred, SSE fallback (docs/API_INTEGRATION.md §4, §6) ──

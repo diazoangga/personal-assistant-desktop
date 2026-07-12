@@ -2,6 +2,7 @@ import { GlobalCognitiveStats } from '../control/GlobalCognitiveStats';
 import { ActivityStream } from '../control/ActivityStream';
 import { ContextInspector } from '../control/ContextInspector';
 import { OpportunitiesPanel } from '../knowledge/OpportunitiesPanel';
+import { MemoryPanel } from '../memory/MemoryPanel';
 import { useUIStore } from '../../store/uiStore';
 import { useSessionTrace } from '../../hooks/useOpportunities';
 import { TraceTimeline } from '../trace/TraceTimeline';
@@ -23,6 +24,9 @@ export function ContextPanel() {
       </Section>
       <Section title="Trace">
         <LiveTrace />
+      </Section>
+      <Section title="Memory">
+        <MemoryPanel />
       </Section>
       <Section title="Opportunities">
         <OpportunitiesPanel />

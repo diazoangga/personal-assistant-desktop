@@ -198,6 +198,17 @@ export interface ActivityItem {
   created_at: string;
 }
 
+export type MemoryScope = 'core' | 'semantic' | 'procedural';
+
+export interface MemoryEntry {
+  id: number;
+  scope: MemoryScope | string;
+  content: string;
+  source_session: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export type ResearchDepth = 'shallow' | 'normal' | 'deep';
 
 export type Verdict = 'accept' | 'reject' | 'correct';
