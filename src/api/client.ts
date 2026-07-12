@@ -24,7 +24,7 @@ import type {
   Session,
   Stats,
   Interest,
-  TraceEntry,
+  TraceStep,
   Turn,
   Verdict,
 } from './types';
@@ -132,7 +132,7 @@ export class PersonalAssistantAPI {
     return data;
   }
 
-  async sessionTrace(id: string): Promise<TraceEntry[]> {
+  async sessionTrace(id: string): Promise<TraceStep[]> {
     const { data } = await this.client.get(`/sessions/${encodeURIComponent(id)}/trace`);
     return data;
   }

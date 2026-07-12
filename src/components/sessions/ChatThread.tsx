@@ -5,6 +5,7 @@ import { useJobsStore } from '../../store/jobsStore';
 import { useUIStore } from '../../store/uiStore';
 import { api } from '../../api/client';
 import { SessionTrace } from './SessionTrace';
+import { TraceTimeline } from '../trace/TraceTimeline';
 
 export function ChatThread({ sessionId }: { sessionId: string | null }) {
   const { data: turns } = useSessionTurns(sessionId);
@@ -93,17 +94,24 @@ export function ChatThread({ sessionId }: { sessionId: string | null }) {
             <div className="h-6 w-6 shrink-0 rounded-full bg-neutral-800 flex items-center justify-center text-xs font-bold text-neutral-400 mt-0.5">
               AI
             </div>
-            <div className="max-w-[80%] rounded-xl rounded-tl-sm bg-white/[0.04] px-3.5 py-2.5 text-sm text-neutral-200 leading-relaxed">
-              {liveText || (
-                <span className="flex items-center gap-1.5 text-neutral-500">
-                  <span className="inline-flex gap-1">
-                    <span className="animate-bounce h-1 w-1 rounded-full bg-neutral-500" style={{ animationDelay: '0ms' }} />
-                    <span className="animate-bounce h-1 w-1 rounded-full bg-neutral-500" style={{ animationDelay: '150ms' }} />
-                    <span className="animate-bounce h-1 w-1 rounded-full bg-neutral-500" style={{ animationDelay: '300ms' }} />
-                  </span>
-                  {stream.phase ?? 'thinking'}
-                </span>
+            <div className="max-w-[80%] min-w-0 space-y-2">
+              {stream.trace.length > 0 && (
+                <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2">
+                  <TraceTimeline steps={stream.trace} />
+                </div>
               )}
+              <div className="rounded-xl rounded-tl-sm bg-white/[0.04] px-3.5 py-2.5 text-sm text-neutral-200 leading-relaxed">
+                {liveText || (
+                  <span className="flex items-center gap-1.5 text-neutral-500">
+                    <span className="inline-flex gap-1">
+                      <span className="animate-bounce h-1 w-1 rounded-full bg-neutral-500" style={{ animationDelay: '0ms' }} />
+                      <span className="animate-bounce h-1 w-1 rounded-full bg-neutral-500" style={{ animationDelay: '150ms' }} />
+                      <span className="animate-bounce h-1 w-1 rounded-full bg-neutral-500" style={{ animationDelay: '300ms' }} />
+                    </span>
+                    {stream.phase ?? 'thinking'}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         )}
