@@ -28,6 +28,7 @@ import type {
   TraceStep,
   Turn,
   Verdict,
+  WorkerRun,
 } from './types';
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8787';
@@ -176,6 +177,18 @@ export class PersonalAssistantAPI {
 
   async forgetMemory(id: number): Promise<void> {
     await this.client.delete(`/memory/${id}`);
+  }
+
+  // ── background workers ──
+
+  async workers(): Promise<WorkerRun[]> {
+    const { data } = await this.client.get('/workers');
+    return data;
+  }
+
+  async runWorker(name: string): Promise<{ job_id: string; worker: string }> {
+    const { data } = await this.client.post(`/workers/${encodeURIComponent(name)}/run`);
+    return data;
   }
 
   // ── streaming: WebSocket preferred, SSE fallback (docs/API_INTEGRATION.md §4, §6) ──

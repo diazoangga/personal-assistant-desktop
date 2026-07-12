@@ -198,6 +198,16 @@ export interface ActivityItem {
   created_at: string;
 }
 
+export interface WorkerRun {
+  id: number;
+  worker: string;
+  status: 'running' | 'ok' | 'error' | string;
+  detail: string | null;
+  job_id: string | null;
+  started_at: string;
+  finished_at: string | null;
+}
+
 export type MemoryScope = 'core' | 'semantic' | 'procedural';
 
 export interface MemoryEntry {
