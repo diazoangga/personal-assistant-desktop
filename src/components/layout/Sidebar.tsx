@@ -12,11 +12,11 @@ export function Sidebar() {
       {/* Nav actions */}
       <div className="flex flex-col gap-1 p-3 border-b border-white/[0.06]">
         <button
-          onClick={() => openSession(null, 'ask')}
+          onClick={() => openSession(null)}
           className="flex items-center gap-2 rounded-md bg-emerald-600 px-3 py-2 text-left text-xs font-semibold text-white hover:bg-emerald-500 transition-colors"
         >
           <span className="text-base leading-none">+</span>
-          New Session
+          New Chat
         </button>
         <button
           onClick={openResearchLauncher}

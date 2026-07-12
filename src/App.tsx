@@ -25,7 +25,7 @@ export default function App() {
       const mod = e.metaKey || e.ctrlKey;
       if (!mod) return;
       if (e.key === 'k') { e.preventDefault(); openResearchLauncher(); }
-      else if (e.key === 'n') { e.preventDefault(); openSession(null, 'ask'); }
+      else if (e.key === 'n') { e.preventDefault(); openSession(null); }
       else if (e.key === '\\') { e.preventDefault(); toggleSidebar(); }
     };
     window.addEventListener('keydown', onKeyDown);
@@ -64,10 +64,9 @@ export default function App() {
         </div>
 
         <nav className="flex-1 flex items-center justify-center gap-1">
-          <TabButton active={canvasMode === 'dashboard'} onClick={closeSession}>Dashboard</TabButton>
+          <TabButton active={canvasMode === 'chat'} onClick={() => openSession(null)}>Chat</TabButton>
           <TabButton active={canvasMode === 'graph'} onClick={showGraph}>Graph</TabButton>
-          <TabButton active={canvasMode === 'ask'} onClick={() => openSession(null, 'ask')}>Ask</TabButton>
-          <TabButton active={canvasMode === 'brainstorm'} onClick={() => openSession(null, 'brainstorm')}>Brainstorm</TabButton>
+          <TabButton active={canvasMode === 'dashboard'} onClick={closeSession}>Dashboard</TabButton>
         </nav>
 
         <div className="flex items-center gap-2">

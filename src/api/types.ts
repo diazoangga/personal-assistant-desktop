@@ -160,7 +160,7 @@ export interface ResearchRun {
 export interface Session {
   id: string;
   title: string;
-  kind: 'ask' | 'brainstorm';
+  kind: 'chat' | 'ask' | 'brainstorm' | string;
   updated_at: string;
 }
 

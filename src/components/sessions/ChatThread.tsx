@@ -34,9 +34,9 @@ export function ChatThread({ sessionId }: { sessionId: string | null }) {
     let sid = sessionId;
     if (!sid) {
       sid = `${crypto.randomUUID().slice(0, 8)}`;
-      openSession(sid, 'ask');
+      openSession(sid);
     }
-    const { job_id } = await api.ask(query, sid);
+    const { job_id } = await api.chat(query, sid);
     trackJob(job_id);
     setPendingJobId(job_id);
   };

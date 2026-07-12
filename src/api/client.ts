@@ -45,13 +45,11 @@ export class PersonalAssistantAPI {
 
   // ── command path: returns a job to stream ──
 
-  async ask(query: string, sessionId?: string): Promise<JobStarted> {
-    const { data } = await this.client.post('/ask', { query, session_id: sessionId });
-    return data;
-  }
-
-  async brainstorm(text: string, sessionId?: string): Promise<JobStarted> {
-    const { data } = await this.client.post('/brainstorm', { text, session_id: sessionId });
+  // Unified conversational entrypoint — routes through the orchestrator, which
+  // delegates to research/KB/web tools (all visible in the trace). Replaces the
+  // removed /ask and /brainstorm.
+  async chat(text: string, sessionId?: string): Promise<JobStarted> {
+    const { data } = await this.client.post('/chat', { text, session_id: sessionId });
     return data;
   }
 
