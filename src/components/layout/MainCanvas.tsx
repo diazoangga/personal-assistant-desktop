@@ -8,7 +8,7 @@ export function MainCanvas() {
   const activeSessionId = useUIStore((s) => s.activeSessionId);
 
   return (
-    <main className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#0d0d0f]">
+    <main className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#0B0E14]">
       {canvasMode === 'dashboard' && <Dashboard />}
 
       {canvasMode === 'graph' && (

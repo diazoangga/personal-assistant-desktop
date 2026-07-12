@@ -18,7 +18,7 @@ function LiveTrace() {
 
 export function ContextPanel() {
   return (
-    <aside className="flex w-[300px] shrink-0 flex-col gap-0 overflow-y-auto border-l border-white/[0.06] bg-[#111114]">
+    <aside className="flex w-[300px] shrink-0 flex-col gap-0 overflow-y-auto border-l border-white/[0.06] bg-[#12161F]">
       <Section title="Stats">
         <GlobalCognitiveStats />
       </Section>

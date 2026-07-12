@@ -8,7 +8,7 @@ export function Sidebar() {
   const canvasMode = useUIStore((s) => s.canvasMode);
 
   return (
-    <aside className="flex w-[240px] shrink-0 flex-col border-r border-white/[0.06] bg-[#111114]">
+    <aside className="flex w-[240px] shrink-0 flex-col border-r border-white/[0.06] bg-[#12161F]">
       {/* Nav actions */}
       <div className="flex flex-col gap-1 p-3 border-b border-white/[0.06]">
         <button
